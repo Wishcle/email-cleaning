@@ -13,7 +13,11 @@ dependencies = [
 [tool.ruff.lint]
 preview = true
 extend-select = [
+    "ARG",
     "E",
     "F",
     "I",
+    "Q",
+    "RUF",
+    "W",
 ]

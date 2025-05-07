@@ -11,8 +11,8 @@ from tqdm import tqdm
 # https://stackoverflow.com/a/59682472/6890681
 class MboxReader:
     def __init__(self, filename):
-        self.handle = open(filename, 'rb')
-        assert self.handle.readline().startswith(b'From ')
+        self.handle = open(filename, "rb")
+        assert self.handle.readline().startswith(b"From ")
 
     def __enter__(self):
         return self
@@ -27,13 +27,13 @@ class MboxReader:
         lines = []
         while True:
             line = self.handle.readline()
-            if line == b'' or line.startswith(b'From '):
-                yield email.message_from_bytes(b''.join(lines), policy=default)
-                if line == b'':
+            if line == b"" or line.startswith(b"From "):
+                yield email.message_from_bytes(b"".join(lines), policy=default)
+                if line == b"":
                     break
                 lines = []
                 continue
-            if line.startswith(b'>') and line.lstrip(b'>').startswith(b'From '):
+            if line.startswith(b">") and line.lstrip(b">").startswith(b"From "):
                 line = line[1:]
             lines.append(line)
 
@@ -80,8 +80,8 @@ def print_names_and_emails_from_senders():
         lines = [line.strip() for line in f.readlines()]
 
     email_counts = Counter()
-    p1 = re.compile("^\[(\d+)\].*<(.*)>")
-    p2 = re.compile("^\[(\d+)\].* (.*)")
+    p1 = re.compile(r"^\[(\d+)\].*<(.*)>")
+    p2 = re.compile(r"^\[(\d+)\].* (.*)")
 
     for line in lines:
         m = p1.match(line) or p2.match(line)
