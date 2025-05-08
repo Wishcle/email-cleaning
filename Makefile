@@ -6,6 +6,9 @@ all: sync
 sync:
 	uv sync
 
+.PHONY: test
+test: lint check
+
 .PHONY: lint
 lint:
 	uv run ruff check
