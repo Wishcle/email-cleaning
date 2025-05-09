@@ -20,11 +20,14 @@ class MboxReader:
     def __exit__(self, _exc_type, _exc_value, _exc_traceback) -> None:  # noqa: ANN001
         self.handle.close()
 
-    def __iter__(self) -> Generator[Message]:
+    def __iter__(self) -> Generator[tuple[Message, int]]:
         lines: list[bytes] = []
         for line in itertools.chain(iter(self.handle.readline, b""), (b"From ",)):
             if line.startswith(b"From "):
-                yield email.message_from_bytes(b"".join(lines), policy=default)  # type: ignore[arg-type]
+                message_bytes = b"".join(lines)
+                message_size = len(message_bytes)
+                message = email.message_from_bytes(message_bytes, policy=default)  # type: ignore[arg-type]
+                yield message, message_size
                 lines.clear()
             if line.startswith(b">") and line.lstrip(b">").startswith(b"From "):
                 line = line[1:]

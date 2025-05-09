@@ -1,4 +1,4 @@
-
+import functools
 import re
 from collections import Counter
 from pathlib import Path
@@ -18,14 +18,16 @@ def print_most_common_senders() -> None:
     # mbox = mailbox.mbox("/mnt/c/Users/cpmqa/Downloads/Unread-001.mbox")
 
     mbox_path = Path("data/Unread-001.mbox")
+    mbox_size = mbox_path.stat().st_size
+    tqdmb = functools.partial(tqdm, unit="B", unit_scale=True, unit_divisor=1024)
 
     print("counting senders")
     sender_counts: Counter[str] = Counter()
     with MboxReader(mbox_path) as mbox:
-        with tqdm(total=39629) as progress:
-            for message in mbox:
+        with tqdmb(total=mbox_size) as progress:
+            for message, size in mbox:
                 sender_counts.update([message["from"]])
-                progress.update()
+                progress.update(size)
 
     # print("counting senders")
     # sender_counts = Counter()
