@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import email
+import itertools
 from email.message import Message
 from email.policy import default
 from pathlib import Path
@@ -21,14 +22,10 @@ class MboxReader:
 
     def __iter__(self) -> Generator[Message]:
         lines: list[bytes] = []
-        while True:
-            line = self.handle.readline()
-            if line == b"" or line.startswith(b"From "):
+        for line in itertools.chain(iter(self.handle.readline, b""), (b"From ",)):
+            if line.startswith(b"From "):
                 yield email.message_from_bytes(b"".join(lines), policy=default)  # type: ignore[arg-type]
-                if line == b"":
-                    break
-                lines = []
-                continue
+                lines.clear()
             if line.startswith(b">") and line.lstrip(b">").startswith(b"From "):
                 line = line[1:]
             lines.append(line)
