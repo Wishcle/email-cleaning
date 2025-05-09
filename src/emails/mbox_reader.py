@@ -15,9 +15,6 @@ class MboxReader:
         self.handle.close()
 
     def __iter__(self):
-        return iter(self.__next__())
-
-    def __next__(self):
         lines = []
         while True:
             line = self.handle.readline()
