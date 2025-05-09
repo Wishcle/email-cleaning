@@ -17,9 +17,11 @@ def print_most_common_senders() -> None:
     # print("opening mbox file")
     # mbox = mailbox.mbox("/mnt/c/Users/cpmqa/Downloads/Unread-001.mbox")
 
+    mbox_path = Path("data/Unread-001.mbox")
+
     print("counting senders")
     sender_counts: Counter[str] = Counter()
-    with MboxReader("data/Unread-001.mbox") as mbox:
+    with MboxReader(mbox_path) as mbox:
         with tqdm(total=39629) as progress:
             for message in mbox:
                 sender_counts.update([message["from"]])
@@ -37,7 +39,7 @@ def print_most_common_senders() -> None:
     outdir.mkdir(exist_ok=True)
     outfile = outdir / "senders.txt"
 
-    with open(outfile, "w+") as f:
+    with outfile.open("w+") as f:
         for sender, count in sender_counts.most_common():
             f.write(f"[{count}] {sender}\n")
 
@@ -46,7 +48,7 @@ def print_names_and_emails_from_senders() -> None:
     senders_file = Path("out/senders.txt")
     assert senders_file.exists()
 
-    with open(senders_file, "r") as f:
+    with senders_file.open("r") as f:
         lines = [line.strip() for line in f.readlines()]
 
     email_counts: Counter[str] = Counter()
@@ -66,7 +68,7 @@ def print_names_and_emails_from_senders() -> None:
     outdir.mkdir(exist_ok=True)
     outfile = outdir / "emails.txt"
 
-    with open(outfile, "w+") as f:
+    with outfile.open("w+") as f:
         for email_, count in email_counts.most_common():
             f.write(f"[{count}] {email_}\n")
 

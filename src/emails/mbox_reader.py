@@ -3,13 +3,14 @@ from __future__ import annotations
 import email
 from email.message import Message
 from email.policy import default
+from pathlib import Path
 from typing import Generator
 
 
 # https://stackoverflow.com/a/59682472/6890681
 class MboxReader:
-    def __init__(self, mbox_path: str) -> None:
-        self.handle = open(mbox_path, "rb")
+    def __init__(self, mbox_path: Path) -> None:
+        self.handle = mbox_path.open("rb")
         assert self.handle.readline().startswith(b"From ")
 
     def __enter__(self) -> MboxReader:
