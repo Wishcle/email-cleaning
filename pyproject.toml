@@ -24,6 +24,7 @@ main = "emails.main:main"
 [tool.ruff.lint]
 preview = true
 extend-select = [
+    "ANN",
     "ARG",
     "E",
     "F",
